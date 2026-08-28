@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: weather-comfort
+
+  cache:
+    cache-names: weatherRaw, comfortScores
+    caffeine:
+      spec: expireAfterWrite=5m,maximumSize=200
+
+  # Auth0 resource server config - fill these in once your Auth0 API is set up (Part 2)
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AUTH0_ISSUER_URI:https://YOUR_DOMAIN.us.auth0.com/}
+          audience: ${AUTH0_AUDIENCE:https://weather-comfort-api}
+
+openweathermap:
+  api-key: ${OWM_API_KEY:REPLACE_ME}
+  base-url: https://api.openweathermap.org/data/2.5/weather
+
+cors:
+  allowed-origins: ${FRONTEND_ORIGIN:http://localhost:5173}
+
+logging:
+  level:
+    com.fidenz.weathercomfort: DEBUG
