@@ -24,3 +24,8 @@ export interface CityWeatherResult {
   comfort: ComfortResult
   rank: number
 }
+
+export interface ForecastPoint {
+  time: string
+  temperatureCelsius: number
+}

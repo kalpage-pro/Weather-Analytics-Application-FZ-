@@ -11,13 +11,6 @@ import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
-/**
- * Spring's auto-configured JwtDecoder (built purely from issuer-uri) validates
- * the token's signature and issuer, but NOT its audience. Without an explicit
- * audience check, a JWT issued by the right Auth0 tenant for a *different* API
- * would still pass validation. This bean adds that missing check via the
- * custom AudienceValidator.
- */
 @Configuration
 public class JwtDecoderConfig {
 

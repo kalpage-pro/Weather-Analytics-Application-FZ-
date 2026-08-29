@@ -34,8 +34,7 @@ public class CityConfigService {
 
         if (cities == null || cities.size() < MIN_CITIES_REQUIRED) {
             int actual = cities == null ? 0 : cities.size();
-            // Not a hard failure - the app still runs - but this is logged loudly
-            // because the assignment requires a minimum of 10 cities.
+            
             System.err.printf(
                     "WARNING: cities.json has only %d cities, assignment requires at least %d.%n",
                     actual, MIN_CITIES_REQUIRED

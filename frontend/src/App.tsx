@@ -1,17 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
-import { fetchCities } from './api/weatherApi'
-import type { CityWeatherResult } from './types/weather'
+import { fetchCities, fetchForecast } from './api/weatherApi'
+import type { CityWeatherResult, ComfortCategory } from './types/weather'
 import { CityCard } from './components/CityCard'
 import { LoginButton, LogoutButton } from './auth/AuthButtons'
+import { ThemeToggle } from './components/ThemeToggle'
+import { DashboardToolbar, type SortKey } from './components/DashboardToolbar'
+import { Footer } from './components/Footer'
+import { useTheme } from './hooks/useTheme'
 import './App.css'
+import './components/DashboardToolbar.css'
+import './components/TemperatureTrendChart.css'
 
 export default function App() {
   const { isLoading: authLoading, isAuthenticated, getAccessTokenSilently, error: authError } = useAuth0()
+  const { theme, toggleTheme } = useTheme()
 
   const [cities, setCities] = useState<CityWeatherResult[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
+  const [sortKey, setSortKey] = useState<SortKey>('rank')
+  const [activeCategory, setActiveCategory] = useState<ComfortCategory | 'All'>('All')
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     if (!isAuthenticated) return
@@ -39,6 +50,44 @@ export default function App() {
     }
   }, [isAuthenticated, getAccessTokenSilently])
 
+  const displayedCities = useMemo(() => {
+    if (!cities) return []
+
+    let result = cities
+
+    if (activeCategory !== 'All') {
+      result = result.filter((c) => c.comfort.category === activeCategory)
+    }
+
+    if (search.trim()) {
+      const q = search.trim().toLowerCase()
+      result = result.filter((c) => c.cityName.toLowerCase().includes(q))
+    }
+
+    const sorted = [...result]
+    switch (sortKey) {
+      case 'score':
+        sorted.sort((a, b) => b.comfort.score - a.comfort.score)
+        break
+      case 'temperature':
+        sorted.sort((a, b) => b.temperatureCelsius - a.temperatureCelsius)
+        break
+      case 'name':
+        sorted.sort((a, b) => a.cityName.localeCompare(b.cityName))
+        break
+      case 'rank':
+      default:
+        sorted.sort((a, b) => a.rank - b.rank)
+        break
+    }
+    return sorted
+  }, [cities, activeCategory, search, sortKey])
+
+  async function loadForecast(cityCode: number) {
+    const token = await getAccessTokenSilently()
+    return fetchForecast(cityCode, token)
+  }
+
   if (authLoading) {
     return (
       <div className="app">
@@ -63,6 +112,7 @@ export default function App() {
   if (!isAuthenticated) {
     return (
       <div className="app app--centered">
+        <ThemeToggle theme={theme} onToggle={toggleTheme} />
         <div className="login-panel">
           <p className="app__eyebrow">Weather Comfort Analytics</p>
           <h1 className="app__title">Sign in to view the dashboard</h1>
@@ -72,6 +122,7 @@ export default function App() {
           </p>
           <LoginButton />
         </div>
+        <Footer />
       </div>
     )
   }
@@ -87,7 +138,10 @@ export default function App() {
             Index that weighs temperature, humidity, wind, and cloud cover together.
           </p>
         </div>
-        <LogoutButton />
+        <div className="app__header-actions">
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          <LogoutButton />
+        </div>
       </header>
 
       {loading && (
@@ -107,17 +161,35 @@ export default function App() {
         </div>
       )}
 
+      {!loading && !error && cities && cities.length > 0 && (
+        <>
+          <DashboardToolbar
+            sortKey={sortKey}
+            onSortKeyChange={setSortKey}
+            activeCategory={activeCategory}
+            onCategoryChange={setActiveCategory}
+            search={search}
+            onSearchChange={setSearch}
+            resultCount={displayedCities.length}
+          />
+
+          {displayedCities.length === 0 ? (
+            <div className="app__state">No cities match your filters.</div>
+          ) : (
+            <div className="city-grid">
+              {displayedCities.map((city) => (
+                <CityCard key={city.cityCode} city={city} onLoadForecast={loadForecast} />
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
       {!loading && !error && cities && cities.length === 0 && (
         <div className="app__state">No cities configured yet.</div>
       )}
 
-      {!loading && !error && cities && cities.length > 0 && (
-        <div className="city-grid">
-          {cities.map((city) => (
-            <CityCard key={city.cityCode} city={city} />
-          ))}
-        </div>
-      )}
+      <Footer />
     </div>
   )
 }

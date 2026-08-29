@@ -1,0 +1,46 @@
+.trend-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.trend-chart__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.trend-chart__area {
+  fill: var(--color-comfortable);
+  opacity: 0.12;
+}
+
+.trend-chart__line {
+  fill: none;
+  stroke: var(--color-comfortable);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trend-chart__point {
+  fill: var(--color-comfortable);
+}
+
+.trend-chart__labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+}
+
+.trend-chart__labels-mid {
+  opacity: 0.8;
+}
+
+.trend-chart__empty {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}

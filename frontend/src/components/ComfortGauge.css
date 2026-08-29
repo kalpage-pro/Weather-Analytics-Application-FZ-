@@ -8,7 +8,7 @@
   position: relative;
   height: 10px;
   border-radius: 5px;
-  background: var(--color-border);
+  background: var(--color-surface-raised);
   overflow: visible;
 }
 
@@ -23,7 +23,8 @@
 .comfort-gauge__tick {
   width: 1px;
   height: 10px;
-  background: rgba(16, 26, 36, 0.35);
+  background: var(--color-text);
+  opacity: 0.12;
 }
 
 .comfort-gauge__fill {
@@ -40,10 +41,10 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--color-bg);
+  background: var(--color-surface);
   border: 3px solid;
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 0 3px var(--color-bg);
+  box-shadow: 0 0 0 3px var(--color-surface), 0 2px 6px rgba(0, 0, 0, 0.15);
   transition: left 0.5s ease;
 }
 
@@ -56,7 +57,7 @@
 
 .comfort-gauge__score {
   font-size: 1.15rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .comfort-gauge__category {

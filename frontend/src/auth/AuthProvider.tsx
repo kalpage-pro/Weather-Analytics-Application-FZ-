@@ -14,8 +14,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         redirect_uri: window.location.origin,
         audience: audience,
       }}
-      // Keep the session in localStorage so a page refresh doesn't force
-      // a fresh login every time during dev/testing.
+     
       cacheLocation="localstorage"
       useRefreshTokens
     >

@@ -6,11 +6,11 @@ spring:
     name: weather-comfort
 
   cache:
-    cache-names: weatherRaw, comfortScores
+    cache-names: weatherRaw, comfortScores, forecastRaw
     caffeine:
       spec: expireAfterWrite=5m,maximumSize=200
 
-  # Auth0 resource server config - fill these in once your Auth0 API is set up (Part 2)
+  # Auth0 resource server config - fill these in once your Auth0 API is set up 
   security:
     oauth2:
       resourceserver:
@@ -21,6 +21,7 @@ spring:
 openweathermap:
   api-key: ${OWM_API_KEY:REPLACE_ME}
   base-url: https://api.openweathermap.org/data/2.5/weather
+  forecast-url: https://api.openweathermap.org/data/2.5/forecast
 
 cors:
   allowed-origins: ${FRONTEND_ORIGIN:http://localhost:5173}

@@ -5,11 +5,7 @@ import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-/**
- * Custom validator: Spring Security ships no built-in audience check, so this
- * confirms the token's "aud" claim contains the expected Auth0 API identifier.
- * (This is the same pattern Auth0's own Spring Boot quickstart uses.)
- */
+
 public class AudienceValidator implements OAuth2TokenValidator<Jwt> {
 
     private final String expectedAudience;

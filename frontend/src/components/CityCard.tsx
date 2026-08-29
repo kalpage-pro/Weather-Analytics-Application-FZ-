@@ -1,12 +1,37 @@
-import type { CityWeatherResult } from '../types/weather'
+import { useState } from 'react'
+import type { CityWeatherResult, ForecastPoint } from '../types/weather'
 import { ComfortGauge } from './ComfortGauge'
+import { TemperatureTrendChart } from './TemperatureTrendChart'
 import './CityCard.css'
 
 interface CityCardProps {
   city: CityWeatherResult
+  onLoadForecast: (cityCode: number) => Promise<ForecastPoint[]>
 }
 
-export function CityCard({ city }: CityCardProps) {
+export function CityCard({ city, onLoadForecast }: CityCardProps) {
+  const [expanded, setExpanded] = useState(false)
+  const [forecast, setForecast] = useState<ForecastPoint[] | null>(null)
+  const [loadingForecast, setLoadingForecast] = useState(false)
+  const [forecastError, setForecastError] = useState<string | null>(null)
+
+  async function handleToggle() {
+    const next = !expanded
+    setExpanded(next)
+    if (next && forecast === null && !loadingForecast) {
+      setLoadingForecast(true)
+      setForecastError(null)
+      try {
+        const data = await onLoadForecast(city.cityCode)
+        setForecast(data)
+      } catch (err) {
+        setForecastError(err instanceof Error ? err.message : 'Could not load forecast.')
+      } finally {
+        setLoadingForecast(false)
+      }
+    }
+  }
+
   return (
     <article className="city-card">
       <div className="city-card__header">
@@ -40,6 +65,18 @@ export function CityCard({ city }: CityCardProps) {
       </dl>
 
       <ComfortGauge score={city.comfort.score} category={city.comfort.category} />
+
+      <button className="city-card__forecast-toggle" onClick={handleToggle}>
+        {expanded ? 'Hide trend' : 'Show temperature trend'}
+      </button>
+
+      {expanded && (
+        <div className="city-card__forecast">
+          {loadingForecast && <p className="trend-chart__empty">Loading forecast&hellip;</p>}
+          {forecastError && <p className="trend-chart__empty">{forecastError}</p>}
+          {forecast && <TemperatureTrendChart points={forecast} />}
+        </div>
+      )}
     </article>
   )
 }
