@@ -1,0 +1,71 @@
+:root {
+  /* Color tokens */
+  --color-bg: #101a24;
+  --color-surface: #17232f;
+  --color-surface-raised: #1e2e3d;
+  --color-border: #2a3d4f;
+  --color-text: #e7ecef;
+  --color-text-muted: #93a5b3;
+
+  --color-comfortable: #4fb6a8;
+  --color-comfortable-dim: #2a4744;
+  --color-moderate: #e3a857;
+  --color-moderate-dim: #4a3e2a;
+  --color-uncomfortable: #e2694b;
+  --color-uncomfortable-dim: #4a2e28;
+
+  /* Type tokens */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(79, 182, 168, 0.08), transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(227, 168, 87, 0.06), transparent 40%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+button {
+  font-family: inherit;
+}
+
+::selection {
+  background: var(--color-comfortable);
+  color: var(--color-bg);
+}
+
+/* Visible keyboard focus */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-comfortable);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
