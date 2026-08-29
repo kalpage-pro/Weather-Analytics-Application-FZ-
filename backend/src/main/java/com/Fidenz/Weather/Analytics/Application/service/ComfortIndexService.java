@@ -4,6 +4,7 @@ import com.Fidenz.Weather.Analytics.Application.dto.ComfortResult;
 import com.Fidenz.Weather.Analytics.Application.dto.OpenWeatherResponse;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class ComfortIndexService {
 
@@ -46,11 +47,7 @@ public class ComfortIndexService {
         );
     }
 
-    /**
-     * 0 inside the ideal band [18C, 24C]. Outside it, grows toward 1 as you move
-     * further away, reaching 1.0 at +-15C from the nearest edge of the band.
-     * Symmetric: extreme cold and extreme heat are penalized equally hard.
-     */
+   
     private double temperaturePenalty(double tempC) {
         double deviation;
         if (tempC < IDEAL_TEMP_LOW) {
@@ -63,12 +60,7 @@ public class ComfortIndexService {
         return clamp(deviation / 15.0, 0.0, 1.0);
     }
 
-    /**
-     * Humidity mostly hurts comfort when it's already warm ("mugginess").
-     * Above 20C: penalty ramps up between 60% and 100% relative humidity.
-     * At or below 20C: humidity barely matters, so we apply a much smaller,
-     * damp-chill effect only above 80%.
-     */
+
     private double humidityPenalty(int humidity, double tempC) {
         if (tempC > 20.0) {
             return clamp((humidity - 60) / 40.0, 0.0, 1.0);
@@ -76,12 +68,7 @@ public class ComfortIndexService {
         return 0.3 * clamp((humidity - 80) / 20.0, 0.0, 1.0);
     }
 
-    /**
-     * Wind's effect flips sign depending on temperature:
-     *  - Cold (<10C): wind chill makes things worse -> penalty grows with speed.
-     *  - Hot (>26C): a breeze helps -> small *negative* penalty (a bonus), capped.
-     *  - Moderate (10-26C): only very strong wind (>8 m/s) is mildly penalized.
-     */
+  
     private double windPenalty(double windSpeed, double tempC) {
         if (tempC < 10.0) {
             return clamp(windSpeed / 15.0, 0.0, 1.0);
@@ -92,11 +79,7 @@ public class ComfortIndexService {
         return 0.3 * clamp((windSpeed - 8) / 12.0, 0.0, 1.0);
     }
 
-    /**
-     * Minor modifier: comfort dips slightly at both extremes of cloud cover -
-     * fully clear (harsh sun/glare, and often hotter) and fully overcast (gloomy).
-     * A partly-cloudy ~50% sky is treated as neutral.
-     */
+  
     private double cloudinessPenalty(int cloudinessPct) {
         return 0.2 * (Math.abs(cloudinessPct - 50) / 50.0);
     }
