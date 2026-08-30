@@ -62,6 +62,7 @@ export function CityCard({ city, onLoadForecast }: CityCardProps) {
           <dt>Cloud</dt>
           <dd>{city.cloudinessPct}%</dd>
         </div>
+    
       </dl>
 
       <ComfortGauge score={city.comfort.score} category={city.comfort.category} />

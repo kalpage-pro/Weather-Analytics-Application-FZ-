@@ -188,7 +188,3 @@ must be wired into Security itself (`http.cors(...)` pointed at a
   config, so a reviewer needs to either use provided test credentials against
   the deployed instance, or set up their own tenant per the steps above.
 
-
-  $env:OWM_API_KEY="4cce64fe586d331eb18b811f69c5f9ca"
-
-  client id   1iRz5xNzipuT6LkQgQURLd2Go8Zq9hTA

@@ -22,17 +22,19 @@ public class ComfortIndexService {
         int humidity = response.main().humidity();
         double windSpeed = response.wind() != null ? response.wind().speed() : 0.0;
         int cloudiness = response.clouds() != null ? response.clouds().all() : 0;
-
+        
         double tempPenalty = temperaturePenalty(tempC);
         double humidityPenalty = humidityPenalty(humidity, tempC);
         double windPenalty = windPenalty(windSpeed, tempC);
         double cloudPenalty = cloudinessPenalty(cloudiness);
+
 
         double weightedPenalty =
                 W_TEMP * tempPenalty
                         + W_HUMIDITY * humidityPenalty
                         + W_WIND * windPenalty
                         + W_CLOUD * cloudPenalty;
+                    
 
         double score = 100.0 - (100.0 * weightedPenalty);
         score = clamp(score, 0.0, 100.0);
@@ -83,6 +85,7 @@ public class ComfortIndexService {
     private double cloudinessPenalty(int cloudinessPct) {
         return 0.2 * (Math.abs(cloudinessPct - 50) / 50.0);
     }
+
 
     private String categoryFor(double score) {
         if (score >= 80) return "Very Comfortable";
